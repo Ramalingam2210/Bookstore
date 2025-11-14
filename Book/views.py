@@ -40,5 +40,18 @@ def Bookstorebyid(request,pk):
     serializer=Bookstore_serializers(product)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def filter_Bookstore(request):
+     Author_name=request.query_params.get('Author_name',None)
+     Book_name=request.query_params.get('Book_name',None)
 
+     if Author_name:
+         products = Bookstore.objects.filter(Author_name__icontains=Author_name)
+     elif Book_name:
+         products = Bookstore.objects.filter(Book_name__icontains=Book_name)
+     else:
+         products = Bookstore.objects.all()
 
+     serializer = Bookstore_serializers(products,many=True)
+     return Response({'message': 'Book List','products' : serializer.data})
+        
